@@ -10,5 +10,5 @@
         android:id="@+id/myImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:tint="#55ff0000" />
+        />
 </RelativeLayout>
