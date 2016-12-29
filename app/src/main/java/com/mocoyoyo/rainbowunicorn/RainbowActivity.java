@@ -3,6 +3,7 @@ package com.mocoyoyo.rainbowunicorn;
 import android.animation.Animator;
 import android.animation.LayoutTransition;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
@@ -32,6 +34,10 @@ public class RainbowActivity extends AppCompatActivity {
     private ImageView imageView;
     private Paint paint;
 
+    public void showColorsPicker(View view) {
+        Intent intent = new Intent(this, ColorsPickerActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +75,7 @@ public class RainbowActivity extends AppCompatActivity {
 
         ValueAnimator timerAnimator = ValueAnimator.ofFloat(0f, 1f);
         timerAnimator.setDuration(TimeUnit.SECONDS.toMillis(1));
-        timerAnimator.setInterpolator(new AccelerateInterpolator());
+        timerAnimator.setInterpolator(new DecelerateInterpolator());
 
         timerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
