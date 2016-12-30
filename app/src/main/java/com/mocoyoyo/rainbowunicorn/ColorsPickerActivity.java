@@ -15,7 +15,13 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ColorsPickerActivity extends AppCompatActivity {
+    private class ColorButtonTag {
+        @ColorInt public int colorValue;
+        public boolean isSelected;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,38 +31,20 @@ public class ColorsPickerActivity extends AppCompatActivity {
         GridLayout gridLayout = (GridLayout) this.findViewById(R.id.main_grid_layout);
 
         // An alternative way to define a color is: Color.parseColor("#23B2A8")
-        @ColorInt final int colors[] = new int[]
-                {
-                        // Pink
-                        0xFFE72D92,
-                        0xFFFF80AB,
-                        0xFFFF4081,
-                        0xFFF50057,
-                        0xFFC51162,
-                        // Blue
-                        0xFF82B1FF,
-                        0xFF448AFF,
-                        0xFF2979FF,
-                        0xFF2962FF,
-                        0xFF213468,
-                        // Green
-                        0xFF00E676,
-                        0xFF00C853,
-                        0xFF23B2A8,
-                        // Yellow-Orange
-                        0xFFFEDD12,
-                        0xFFFFD740,
-                        0xFFFFC400,
-                        0xFFFFAB00,
-                        0xFFEE7523,
-                };
 
-        for (int colorValue : colors) {
+        final ColorSettings colorSettings = ColorSettings.getInstance();
+        ArrayList<Integer> selectedColors = colorSettings.getSelectedColors();
+        for (int colorValue : colorSettings.getAllColors()) {
             ImageView imageView = new ImageView(this);
-            imageView.setImageResource(R.drawable.ic_check_white);
             imageView.setPadding(50, 50, 50, 50);
             imageView.setBackgroundColor(colorValue);
-            imageView.setTag(true);
+
+            ColorButtonTag tag = new ColorButtonTag();
+            tag.colorValue = colorValue;
+            tag.isSelected = selectedColors.contains(colorValue);
+            imageView.setTag(tag);
+
+            setImageViewTick(imageView, tag.isSelected);
 
             imageView.setLayoutParams(new ActionBar.LayoutParams(200, 200));
 
@@ -64,26 +52,30 @@ public class ColorsPickerActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     ImageView innerImageView = (ImageView)v;
+                    ColorButtonTag innerTag = (ColorButtonTag) v.getTag();
 
-                    boolean isSelected = (boolean)v.getTag();
-                    if (isSelected)
-                    {
-                        innerImageView.setImageResource(android.R.color.transparent);
+                    innerTag.isSelected = !innerTag.isSelected;
+                    if (innerTag.isSelected) {
+                        colorSettings.select(innerTag.colorValue);
                     }
-                    else
-                    {
-                        innerImageView.setImageResource(R.drawable.ic_check_white);
+                    else {
+                        colorSettings.deselect(innerTag.colorValue);
                     }
 
-                    innerImageView.setTag(!isSelected);
+                    setImageViewTick(innerImageView, innerTag.isSelected);
                 }
             });
 
             gridLayout.addView(imageView);
         }
+    }
 
-        TextView text1 = new TextView(this);
-        text1.setText("hello world");
-
+    private void setImageViewTick(ImageView imageView, boolean isSelected) {
+        if (isSelected) {
+            imageView.setImageResource(R.drawable.ic_check_white);
+        }
+        else {
+            imageView.setImageResource(android.R.color.transparent);
+        }
     }
 }

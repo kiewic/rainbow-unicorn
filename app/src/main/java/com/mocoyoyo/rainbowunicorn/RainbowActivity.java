@@ -20,6 +20,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +32,7 @@ public class RainbowActivity extends AppCompatActivity {
     private float progress;
     private Bitmap bitmap;
     private Canvas canvas;
+    private ColorSettings colorSettings;
     private ImageView imageView;
     private Paint paint;
 
@@ -45,6 +47,8 @@ public class RainbowActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rainbow);
 
         imageView = (ImageView) findViewById(R.id.myImageView);
+        colorSettings = ColorSettings.getInstance();
+
         final ViewTreeObserver vto = imageView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -52,7 +56,6 @@ public class RainbowActivity extends AppCompatActivity {
                 // Remove the listener, or we will be doing this a lot.
                 imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                Log.d("foo", "drawing!");
                 bitmap = Bitmap.createBitmap(
                     imageView.getWidth(),
                     imageView.getHeight(),
@@ -138,33 +141,15 @@ public class RainbowActivity extends AppCompatActivity {
 
     private int GetRandomColor()
     {
-        @ColorInt final int colors[] = new int[]
+        ArrayList<Integer> selectedColors = colorSettings.getSelectedColors();
+
+        // If there are no colors selected, select WHITE.
+        if (selectedColors.size() == 0)
         {
-            // Yellow, Orange, Pink, Turquoise, Marine Blue
-            0xFFFEDD12,
-            0xFFEE7523,
-            0xFFE72D92,
-            Color.parseColor("#23B2A8"),
-            Color.parseColor("#213468"),
-            // Pink
-            0xFFFF80AB,
-            0xFFFF4081,
-            0xFFF50057,
-            0xFFC51162,
-            // Blue
-            0xFF82B1FF,
-            0xFF448AFF,
-            0xFF2979FF,
-            0xFF2962FF,
-            // Green
-            0xFF00E676,
-            0xFF00C853,
-            // Yellow-Orange
-            0xFFFFD740,
-            0xFFFFC400,
-            0xFFFFAB00
-        };
+            return Color.WHITE;
+        }
+
         Random r = new Random();
-        return colors[r.nextInt(colors.length)];
+        return selectedColors.get(r.nextInt(selectedColors.size()));
     }
 }
