@@ -8,6 +8,10 @@
 ## Credits
 
 * [Check icon][icons]
+* [Color palette][color]
+
 
 
   [icons]: https://material.io/icons/#ic_check
+  [color]: https://material.io/guidelines/style/color.html
+
